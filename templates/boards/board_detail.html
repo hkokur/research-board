@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-3">
+    <div class="row">
+        <div class="col-md-2">
+            <!-- Board List Section -->
+            {% for board in board_list %}
+            <div class="row"> 
+                <div class="col-8 my-auto">
+                     <li class="my-auto">
+                        <a href= "{% url 'board-detail' board_slug=board.slug board_uuid=board.uuid %}">{{board}}</a>
+                     </li>
+                </div>
+                <div class="col-4">
+                    <a class="text-danger" href="{% url 'board-delete' board_uuid=board.uuid %}">Delete Board</a>
+                </div>
+            </div>
+            {% endfor %}
+            <div class="row">
+                <div class="col mt-2 text-center">
+                    <a class="text-success" href="{% url 'board-create' %}">Create New Board</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-10">
+            <!-- Board Detail Section-->
+            <h6 class="display-6 text-center">{{board.title}}</h6>
+            <p class="text-md-center">{{ board.description }}
+                <a href="{% url 'board-update' board_slug=board.slug board_uuid=board.uuid%}">
+                    <i class="bi-pencil-square"></i>
+                </a>
+            </p>
+ 
+            <div class="row">
+                {% for card in board.urlcards.all %}
+                <div class="col-md-4">
+                    <div class="card bg-dark text-white border-success">
+                        <div class="card-body">
+                            <div class="card-title text-md-center">
+                                <a class="card-link" href="{% url 'urlcard-update' urlcard_slug=card.slug urlcard_uuid=card.uuid%}">
+                                    {{card.title}}
+                                </a>
+                            </div>
+                            <ul class="list-group list-group-flush">
+                                {% for url in card.urls.all|slice:":3" %}
+                                <li class="list-group-item bg-dark text-white text-truncate">
+                                    <a class="card-link" href="{{url}}">
+                                        {{url}}
+                                    </a>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                            <p class="card-text">
+                                {% if card.note is not None %}
+                                    {{ card.note|truncatechars:100 }}
+                                {% endif %}
+                            </p>
+                        </div> 
+                    </div>
+                </div>
+                {% endfor %}
+                <div class="col-md-4 text-center">
+                    <a class="text-success" href="{% url 'urlcard-create' board_uuid=board.uuid %}">Create New UrlCard</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

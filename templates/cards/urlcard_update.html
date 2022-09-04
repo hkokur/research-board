@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container pt-3">
+    <div class="row">
+        <div class="col-md-4">
+            <ul class="list-group list-group-flush">
+                {% for url in urlcard.urls.all %}
+                <li class="list-group-item bg-dark text-white">
+                    <a href="{{url}}" target="_blank" rel="noopener noreferrer">
+                        {{url|truncatechars:200}}
+                    </a>
+                </li>
+                {% if forloop.last or empty%}
+                    <li class="list-group-item bg-dark text-center">
+                        <a class="text-success" href="{% url 'url-create' urlcard_uuid=urlcard.uuid %}">
+                            Add New Url
+                        </a>
+                    </li>
+                {% endif %}
+                {% empty %}
+                <li class="list-group-item bg-dark text-center">
+                    <a class="text-success" href="{% url 'url-create' urlcard_uuid=urlcard.uuid %}">
+                        Add New Url
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="col-md-8 text-center">
+            <form method="POST">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button class="btn-success" type="submit">Save</button>
+            </form>
+        </div>
+    </div>
+    <div class="row text-md-center pt-5">
+        {% for board in urlcard.boards.all %}
+            <a href="{% url 'board-detail' board_slug=board.slug board_uuid=board.uuid %}" >Back To {{board.title}}</a>
+        {% endfor %}
+        <p><b>Please, save your progress. <small class="text-danger">NO AUTO SAVE!</small></b></p>
+    </div>
+    <div class="row text-md-center pt-5">
+            <a class="text-danger" href="{% url 'urlcard-delete' urlcard_uuid=urlcard.uuid %}"><b>Delete Card</b></a>
+    </div>
+</div>
+{% endblock %}
+
+
